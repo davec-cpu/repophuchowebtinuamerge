@@ -2,30 +2,34 @@ POST   http://localhost:3003/apis/visitor/login
 content-type: application/json
 
 {
-    "username":"diephoaiphong777",
-    "password": "1237890"
+    "username":"us11",
+    "password": "pw11"
 }
 
 ###
 
-GET   http://localhost:3001/apis/profile/show/us11
+GET   http://localhost:3003/apis/profile/show/us11
 Authorization: Beaer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzMTEiLCJwYXNzd29yZCI6InB3MTEiLCJpYXQiOjE2NjYyNzg2NjgsImV4cCI6MTY2NjM4NjY2OH0.F3UP2XVtbRYG0BsO0qGg8MLLI8I1qsy5gH-DJv-ZAcA
 
 
 ###
-POST   http://localhost:3001/apis/user/register
+POST   http://localhost:3003/apis/visitor/register
 content-type: application/json
 
 {
     "username":"us11",
     "password": "pw11",
-    "email": "hola11@gmail"
+    "role":"user",
+    "address": "199 Đê La Thành ",
+    "birthday": null,
+    "email": "hola11@gmail",
+    "fullname" :""
 }
 
 ###
 
 # Authorization: Beaer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzMTEiLCJwYXNzd29yZCI6InB3MTEiLCJpYXQiOjE2NjYyNzg2NjgsImV4cCI6MTY2NjM4NjY2OH0.F3UP2XVtbRYG0BsO0qGg8MLLI8I1qsy5gH-DJv-ZAcA
-POST   http://localhost:3001/apis/film/create
+POST   http://localhost:3003/apis/film/create
 content-type: application/json
 
 {
@@ -35,7 +39,6 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3001/apis/film/show
-
+GET http://localhost:3003/apis/homePage
 
 

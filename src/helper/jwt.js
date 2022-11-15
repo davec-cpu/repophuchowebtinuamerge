@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const jwtSign = async (data) => {
- 
   return jwt.sign(data, process.env.ACCESS_TOKEN, { expiresIn: "30h" });
 };
 
