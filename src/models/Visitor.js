@@ -41,6 +41,10 @@ class Visitor {
     return this.#password;
   }
 
+  get getRole(){
+    return this.#role
+  }
+
    signIn(){
    return new Promise((resolve, reject) => {
     try {

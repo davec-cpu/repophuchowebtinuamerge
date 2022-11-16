@@ -6,7 +6,7 @@ const morgan = require('morgan')
 const app = express()
 
 const routes = require('./router')
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 3003
 
 app.use(express.json()) 
 app.use(express.urlencoded({extended:  true}))
@@ -27,4 +27,3 @@ app.listen(port, () => {
     console.log('Server is running on http://localhost:' + port);
 });
 
-// đã làm qua sequelize, tiếp tục tìm cách để làm việc với data

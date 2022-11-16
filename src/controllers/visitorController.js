@@ -20,10 +20,11 @@ const Film = require("../models/Film")
        if (!existentUser) throw new NotFoundError("sign in first")
        const pwd = await bcryptCompare(password, existentUser.matKhau)
        if (!pwd) throw new ValidationError("Wrong password")
-      const jwt = await jwtSign({username})
+       const role = visitor.getRole
+      const jwt = await jwtSign({role})
       if (jwt) res.send(jwt)
      } catch (error) {
-      next(error);
+      res.send(error.message)
      }
    }
 
@@ -43,11 +44,13 @@ const Film = require("../models/Film")
     const newUser = await visitor.signUp()
 
     if(newUser){
-      const jwt = await jwtSign({username})
+      const role = visitor.getRole
+      const jwt = await jwtSign({role})
+      if (jwt) res.send(jwt)
       res.send(jwt)
     } 
   }catch (error){
-  next(error)
+    res.send(error)
   }
 }
 
@@ -64,7 +67,7 @@ const showHomePage =async (req,res,next) =>{
   }
   res.send(dataFilm)
   } catch (error) {
-      next(error)
+  res.send(error)
   }
 }
 

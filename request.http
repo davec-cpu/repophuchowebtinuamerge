@@ -40,5 +40,11 @@ content-type: application/json
 
 ###
 GET http://localhost:3003/apis/homePage
+###
 
+POST   http://localhost:3003/apis/film/filter/genres
+content-type: application/json
 
+{
+    "genres":["Kỳ ảo","Phiêu lưu"]
+}
