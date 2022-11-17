@@ -1,5 +1,6 @@
-POST   http://localhost:3003/apis/visitor/login
+POST   http://localhost:3003/apis/login
 content-type: application/json
+
 {
     "username":"us11",
     "password": "pw11"
@@ -12,17 +13,18 @@ Authorization: Beaer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzMT
 
 
 ###
-POST   http://localhost:3003/apis/visitor/register
+POST   http://localhost:3003/apis/register
 content-type: application/json
 
 {
-    "username":"us11",
-    "password": "pw11",
-    "role":"user",
-    "address": "199 Đê La Thành ",
-    "birthday": null,
+    "tenDangNhap":"us11",
+    "matKhau": "pw11",
+    "vaiTro":"user",
+    "diaChi": "199 Đê La Thành ",
+    "ngaySinh": null,
     "email": "hola11@gmail",
-    "fullname" :""
+    "tenDayDu" :"",
+    "gioiTinh" : "bisexual"
 }
 
 ###
@@ -56,6 +58,22 @@ GET http://localhost:3003/apis/film/search/id/2
 
 ###
 GET http://localhost:3003/apis/film/show
+
+###
+
+GET http://localhost:3003/apis/user/show/3
+
+###
+POST  http://localhost:3003/apis/user/update/3
+content-type: application/json
+
+{
+    "address": "Phường Phương Canh, Quận Nam Từ Liêm, Hà Nội",
+    "birthday": "1990-02-18",
+    "email": "dangngociep110@hotmail.com",
+    "fullname": "Lee Min Ho",
+    "sex": "Nam"
+}
 
 ###
 http://localhost:3003/apis/

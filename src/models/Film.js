@@ -52,9 +52,9 @@ class Film{
 
     getAllFilm(){
       return new Promise((resolve, reject) => {
+      pool.getConnection( (err,connection) =>{ 
       try {
       const query = "SELECT * FROM phim"
-      pool.getConnection( (err,connection) =>{ 
       if (err) throw err
       connection.query(
       query,
@@ -65,19 +65,18 @@ class Film{
       resolve(rows)
       })
       connection.release()
-      })
       }catch (error) {
+        connection.release()
       reject(error)
       console.log(error)
-      }})
-    }
+      }})})}
 
     getFilmById(){
      return new Promise((resolve, reject) => {
+       pool.getConnection( (err,connection) =>{ 
      try {
       console.log(this.#idFilm);
      const query = "SELECT * FROM phim WHERE idPhim = ?"
-     pool.getConnection( (err,connection) =>{ 
      if (err) throw err
      connection.query(
      query,
@@ -85,22 +84,21 @@ class Film{
      (err,rows) =>{
      if (err) throw err
      if(rows.length === 0) throw new NotFoundError() 
-     resolve(rows)
+     resolve(rows[0])
     })
     connection.release()
-     })
      }catch (error) {
-     reject(error)
+      connection.release()
+      reject(error)
      console.log(error)
-     }})
-    }
+    }})})}
 
     getFilmByName(){
       return new Promise((resolve, reject) => {
+        pool.getConnection( (err,connection) =>{ 
       try {
       const query = "SELECT * FROM phim WHERE tenPhim LIKE" 
       + "'%" + this.#name + "%'" 
-      pool.getConnection( (err,connection) =>{ 
       if (err) throw err
       connection.query(
       query,
@@ -111,19 +109,18 @@ class Film{
       resolve(rows)
       })
       connection.release()
-      })
       }catch (error) {
-      reject(error)
+        connection.release()
+        reject(error)
       console.log(error)
-      }})
-    }
+      }})})}
 
     getFilmByViews(){
         return new Promise((resolve, reject) => {
+          pool.getConnection( (err,connection) =>{ 
           try {
             const view = 500
             const query = "SELECT * FROM phim WHERE luotXem > ?"
-            pool.getConnection( (err,connection) =>{ 
             if (err) throw err
             connection.query(
               query,
@@ -133,20 +130,19 @@ class Film{
                 else resolve(rows)
               })
               connection.release();
-            })
+            
           } catch (error) {
+            connection.release();
             reject(error)
             console.log(error);
-          }
-        })
-      }
+          }})})}
     
       getFilmByRatings(){
         return new Promise((resolve, reject) => {
+          pool.getConnection( (err,connection) =>{ if (err) throw err
           try {
             const top = 3
-            const query = "SELECT * FROM phim WHERE idPhim IN (SELECT idPhim FROM khach_hang_danh_gia ORDER BY soSaoDanhGia DESC) LIMIT ?"
-            pool.getConnection( (err,connection) =>{ if (err) throw err
+              const query = "SELECT * FROM phim WHERE idPhim IN (SELECT idPhim FROM khach_hang_danh_gia ORDER BY soSaoDanhGia DESC) LIMIT ?"
             connection.query(
               query,
               [top],
@@ -154,22 +150,20 @@ class Film{
                 if (err) throw err
                 else resolve(rows)
               })
-              connection.release();
-          })
+              connection.release()
           } catch (error) {
+            connection.release();
             reject(error)
             console.log(error);
             
-          }
-        })
-      }
+          }})})}
     
       getNewFilm(){
         return new Promise((resolve, reject) => {
+          pool.getConnection( (err,connection) =>{ 
          try {
         const number = 3;
         const query = "SELECT * FROM phim ORDER BY ngayChieu DESC LIMIT ?"
-        pool.getConnection( (err,connection) =>{ 
           if (err) throw err
          connection.query(
           query,
@@ -179,22 +173,22 @@ class Film{
             else resolve(rows)
           })
         connection.release()      
-        })
-         } catch (error) {
-             connection.destroy()
-          reject(error)
+      } catch (error) {
+        connection.release()
+        reject(error)
         console.log(error)
-        }})
+      
+      }})})
       }
 
       getFilmByGenres(){
         return new Promise((resolve, reject) => {
+          pool.getConnection( (err,connection) =>{ 
         try {
         const length = this.#genre.length
         const query = "SELECT * FROM phim WHERE idPhim IN" +
         "(SELECT idPhim FROM phim__the_loai WHERE theLoai IN" +
           "(?) GROUP BY idPhim HAVING COUNT(*) = ?)"
-        pool.getConnection( (err,connection) =>{ 
         if (err) throw err
         connection.query(
         query,
@@ -202,17 +196,40 @@ class Film{
         (err,rows) =>{
         if (err) throw err
         if(rows.length === 0) throw new NotFoundError()
-
         resolve(rows)
         })
         connection.release()
+        
+        }catch (error) {
+          connection.release()
+          reject(error)
+        console.log(error)
+        }})})
+      }
+
+// *****************************************************************************************
+      // Nhóm chức năng thêm
+
+      createFilm(){
+        return new Promise((resolve, reject) => {
+        pool.getConnection( (err,connection) =>{ 
+        try {
+        const query = "INSERT INTO phim VALUES(?,?,?,?,?,?)"
+        if (err) throw err
+        connection.query(
+        query,
+        [this.#name,this.#description,this.#rating,this.#trailer,this.#view,this.#releaseDay],
+        (err,rows) =>{
+        if (err) throw err
+        if(rows.length === 0) throw new NotFoundError() 
+        resolve(rows)
         })
+        connection.release()
         }catch (error) {
         reject(error)
         console.log(error)
-        }})
+        }})})
       }
-
 }
 
 module.exports = Film;

@@ -5,23 +5,23 @@ const {
 } = require("../helper/customError");
 const { jwtSign } = require("../helper/jwt");
 const { bcryptHash, bcryptCompare } = require("../helper/bcrypt");
-const { Visitor } = require("../models/Visitor")
-const Film = require("../models/Film")
+const Visitor  = require("../models/Visitor")
+const Film = require("../models/Film");
+const User  = require("../models/User");
+
 
   const login = async (req,res,next) => {
     const account = req.body;
     let visitor = new Visitor();
     visitor.setUsername = account.username;
     visitor.setPassword = account.password;
-    const username = visitor.getUsername;
     const password = visitor.getPassword;
     try {
        const existentUser = await visitor.signIn();
        if (!existentUser) throw new NotFoundError("sign in first")
        const pwd = await bcryptCompare(password, existentUser.matKhau)
        if (!pwd) throw new ValidationError("Wrong password")
-       const role = visitor.getRole
-      const jwt = await jwtSign({role})
+      const jwt = await jwtSign(existentUser)
       if (jwt) res.send(jwt)
      } catch (error) {
       res.send(error.message)
@@ -29,28 +29,26 @@ const Film = require("../models/Film")
    }
 
    const register = async (req,res,next) => {
-    const {username,password,role,address,birthday,email,fullname} = req.body;
-  try { 
-  if (!username) throw new FieldRequiredError(`A username`);
-    if (!password) throw new FieldRequiredError(`A password`);
-    if (!role) throw new FieldRequiredError(`A role`);
-    if (!address) throw new FieldRequiredError(`A address`);
+    const {tenDangNhap,matKhau,vaiTro,diaChi,ngaySinh,email,tenDayDu,gioiTinh} = req.body;
+    console.log(req.body,gioiTinh);
+    try { 
+  if (!tenDangNhap) throw new FieldRequiredError(`A tenDangNhap`);
+    if (!matKhau) throw new FieldRequiredError(`A matKhau`);
+    if (!vaiTro) throw new FieldRequiredError(`A vaiTro`);
+    if (!diaChi) throw new FieldRequiredError(`A diaChi`);
     if (!email) throw new FieldRequiredError(`A email`);
    
-    const hashPassword = await bcryptHash(password);
+    const hashPassword = await bcryptHash(matKhau);
 
-    let visitor = new Visitor(username,hashPassword,role,address,birthday,email,fullname);
-
-    const newUser = await visitor.signUp()
+    let user = new User(tenDangNhap,hashPassword,vaiTro,diaChi,ngaySinh,email,tenDayDu,gioiTinh);
+    const newUser = await user.signUp()
 
     if(newUser){
-      const role = visitor.getRole
-      const jwt = await jwtSign({role})
-      if (jwt) res.send(jwt)
+      const jwt = await jwtSign(newUser)
       res.send(jwt)
     } 
   }catch (error){
-    res.send(error)
+    res.status(400).send(error)
   }
 }
 
