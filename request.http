@@ -1,6 +1,5 @@
 POST   http://localhost:3003/apis/visitor/login
 content-type: application/json
-
 {
     "username":"us11",
     "password": "pw11"
@@ -46,5 +45,17 @@ POST   http://localhost:3003/apis/film/filter/genres
 content-type: application/json
 
 {
-    "genres":["Kỳ ảo","Phiêu lưu"]
+    "genres":["Kì ảo","Phiêu lưu"]
 }
+###
+GET http://localhost:3003/apis/film/search/name?search=Sinh vật 
+
+
+### 
+GET http://localhost:3003/apis/film/search/id/2
+
+###
+GET http://localhost:3003/apis/film/show
+
+###
+http://localhost:3003/apis/

@@ -24,6 +24,22 @@ class Film{
         this.#releaseDay= releaseDay
     }
 
+    set setId(idFilm) {
+      this.#idFilm = idFilm;
+    }
+  
+    get getId() {
+      return this.#idFilm;
+    }
+
+    set setName(name) {
+      this.#name = name;
+    }
+  
+    get getName() {
+      return this.#name;
+    }
+
     set setGenre(genre) {
       this.#genre = genre;
     }
@@ -32,10 +48,34 @@ class Film{
       return this.#genre;
     }
 
+// Nhóm chức năng tìm kiếm, show dữ liệu
+
+    getAllFilm(){
+      return new Promise((resolve, reject) => {
+      try {
+      const query = "SELECT * FROM phim"
+      pool.getConnection( (err,connection) =>{ 
+      if (err) throw err
+      connection.query(
+      query,
+      [],
+      (err,rows) =>{
+      if (err) throw err
+      if(rows.length === 0) throw new NotFoundError() 
+      resolve(rows)
+      })
+      connection.release()
+      })
+      }catch (error) {
+      reject(error)
+      console.log(error)
+      }})
+    }
 
     getFilmById(){
      return new Promise((resolve, reject) => {
      try {
+      console.log(this.#idFilm);
      const query = "SELECT * FROM phim WHERE idPhim = ?"
      pool.getConnection( (err,connection) =>{ 
      if (err) throw err
@@ -58,12 +98,13 @@ class Film{
     getFilmByName(){
       return new Promise((resolve, reject) => {
       try {
-      const query = "SELECT * FROM phim WHERE tenPhim LIKE '%?%' " 
+      const query = "SELECT * FROM phim WHERE tenPhim LIKE" 
+      + "'%" + this.#name + "%'" 
       pool.getConnection( (err,connection) =>{ 
       if (err) throw err
       connection.query(
       query,
-      [this.#name],
+      [],
       (err,rows) =>{
       if (err) throw err
       if(rows.length === 0) throw new NotFoundError() 
@@ -149,24 +190,19 @@ class Film{
       getFilmByGenres(){
         return new Promise((resolve, reject) => {
         try {
-        console.log(this.#genre);
-
-        let copyGenres = genres.slice(0)
-        copyGenres.pop();
-        const subQuery = copyGenres.reduce((prev,value)=>{
-            return prev + "AND ? "
-        },"? ")
-        console.log(subQuery);
-        console.log(genres); 
-        const query = "SELECT * FROM phim WHERE theLoai = ?"
+        const length = this.#genre.length
+        const query = "SELECT * FROM phim WHERE idPhim IN" +
+        "(SELECT idPhim FROM phim__the_loai WHERE theLoai IN" +
+          "(?) GROUP BY idPhim HAVING COUNT(*) = ?)"
         pool.getConnection( (err,connection) =>{ 
         if (err) throw err
         connection.query(
         query,
-        [this.#genre],
+        [this.#genre,length],
         (err,rows) =>{
         if (err) throw err
-        if(rows.length === 0) throw new NotFoundError() 
+        if(rows.length === 0) throw new NotFoundError()
+
         resolve(rows)
         })
         connection.release()
