@@ -6,7 +6,7 @@ const {
 } = require("../helper/customError");
 const pool = require("../config/configMysql");
 class Film{
-    #idFilm
+    #id
     #name
     #genre
     #description
@@ -14,9 +14,8 @@ class Film{
     #trailer
     #view
     #releaseDay
-    constructor(name,genre,description,rating,trailer,view,releaseDay){
+    constructor(name,description,rating,trailer,view,releaseDay){
         this.#name= name
-        this.#genre= genre
         this.#description= description
         this.#rating= rating
         this.#trailer= trailer
@@ -24,12 +23,12 @@ class Film{
         this.#releaseDay= releaseDay
     }
 
-    set setId(idFilm) {
-      this.#idFilm = idFilm;
+    set setId(id) {
+      this.#id = id;
     }
   
     get getId() {
-      return this.#idFilm;
+      return this.#id;
     }
 
     set setName(name) {
@@ -75,12 +74,11 @@ class Film{
      return new Promise((resolve, reject) => {
        pool.getConnection( (err,connection) =>{ 
      try {
-      console.log(this.#idFilm);
      const query = "SELECT * FROM phim WHERE idPhim = ?"
      if (err) throw err
      connection.query(
      query,
-     [this.#idFilm],
+     [this.#id],
      (err,rows) =>{
      if (err) throw err
      if(rows.length === 0) throw new NotFoundError() 
@@ -214,11 +212,38 @@ class Film{
         return new Promise((resolve, reject) => {
         pool.getConnection( (err,connection) =>{ 
         try {
-        const query = "INSERT INTO phim VALUES(?,?,?,?,?,?)"
+        const query = "INSERT INTO phim VALUES(?,?,?,?,?,?,?)"
         if (err) throw err
         connection.query(
         query,
-        [this.#name,this.#description,this.#rating,this.#trailer,this.#view,this.#releaseDay],
+        [null,this.#name,this.#description,this.#rating,this.#trailer,this.#view,this.#releaseDay],
+        (err,rows) =>{
+        if (err) throw err
+        if(rows.length === 0) throw new NotFoundError() 
+        this.#id = rows.insertId 
+        resolve(rows.insertId)
+        })
+        connection.release()
+        }catch (error) {
+        reject(error)
+        console.log(error)
+        }})})
+      }
+
+      // *****************************************************************************************
+      // Nhóm chức năng Sửa
+
+      updateFilm(){
+        return new Promise((resolve, reject) => {
+        pool.getConnection( (err,connection) =>{ 
+        try {
+        const query = "UPDATE phim SET" +
+                      "tenPhim = ?, moTa = ?, danhGia = ?, trailer = ?, luotXem = ?, ngayChieu = ?" +
+                      "WHERE idPhim = ?"
+        if (err) throw err
+        connection.query(
+        query,
+        [this.#name, this.#description, this.#rating, this.#trailer, this.#view, this.#releaseDay, this.#id],
         (err,rows) =>{
         if (err) throw err
         if(rows.length === 0) throw new NotFoundError() 
@@ -230,6 +255,31 @@ class Film{
         console.log(error)
         }})})
       }
+
+
+      // *****************************************************************************************
+      // Nhóm chức năng Xoá
+      deleteFilm(){
+        return new Promise((resolve, reject) => {
+        pool.getConnection( (err,connection) =>{ 
+        try {
+        const query = "DELETE FROM phim WHERE idPhim = ?"
+        if (err) throw err
+        connection.query(
+        query,
+        [this.#id],
+        (err,rows) =>{
+        if (err) throw err
+        if(rows.length === 0) throw new NotFoundError() 
+        resolve(rows)
+        })
+        connection.release()
+        }catch (error) {
+        reject(error)
+        console.log(error)
+        }})})
+      }
+
 }
 
 module.exports = Film;

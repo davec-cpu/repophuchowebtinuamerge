@@ -1,5 +1,17 @@
 const User = require("../models/User");
 
+
+const getAllUser = async (req,res,next) => {
+    try {
+        let user = new User()
+        const usersInfo = await user.getAllUserInfo()
+        res.send(usersInfo)
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+
+}
+
 const getUserInfo = async (req,res,next) => {
     const params = req.params
     try {
@@ -31,6 +43,8 @@ const updateUserInfo = async (req,res,next) => {
         res.status(400).send(error.message)
     }
 }
+
+
 
 module.exports = {
     getUserInfo,

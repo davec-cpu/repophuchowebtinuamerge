@@ -153,6 +153,27 @@ class User extends Visitor{
         }})})
       }
 
+      getAllUserInfo(){
+        return new Promise((resolve, reject) => {
+        pool.getConnection( (err,connection) =>{ 
+        try {
+        const query = "SELECT idNguoiDung,diaChi,ngaySinh,email,tenDayDu,gioiTinh FROM nguoi_dung_co_tai_khoan"
+        if (err) throw err
+        connection.query(
+        query,
+        [],
+        (err,rows) =>{
+        if (err) throw err
+        if(rows.length === 0) throw new NotFoundError() 
+        resolve(rows)
+        })
+        connection.release()
+        }catch (error) {
+        reject(error)
+        console.log(error)
+        }})})
+      }
+
       getUserInfo(){
         return new Promise((resolve, reject) => {
         pool.getConnection( (err,connection) =>{ 
@@ -166,7 +187,6 @@ class User extends Visitor{
         if (err) throw err
         if(rows.length === 0) throw new NotFoundError() 
         resolve(rows[0])
-        console.log(rows);
         })
         connection.release()
         }catch (error) {
