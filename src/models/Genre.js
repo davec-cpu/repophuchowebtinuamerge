@@ -30,25 +30,16 @@ class Genre{
         return this.#idFilm;
     }
 
-    getGenresByIdFilm(){
-        return new Promise((resolve, reject) => {
-        pool.getConnection( (err,connection) =>{ 
-        try {
-        const query = "SELECT theLoai from phim__the_loai where idPhim = ?" 
-        if (err) throw err
-        connection.query(
-        query,
-        [this.#idFilm],
-        (err,rows) =>{
-        if (err) throw err
-        // if(rows.length === 0) throw new NotFoundError() 
-        resolve(rows)
+    addNewComment(){
+        return new Promise((res, rej) => {
+            pool.getConnection( (err, connection) => {
+                try {
+                    const query = "INSERT INTO "
+                } catch (error) {
+                    
+                }
+            })
         })
-        connection.release()
-        }catch (error) {
-        reject(error)
-        console.log(error)
-        }})})
     }
 
     createGenresInFilm(){

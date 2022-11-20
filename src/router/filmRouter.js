@@ -7,6 +7,7 @@ router.get('/search/name',filmController.getFilmByName)
 router.get('/show',filmController.getAllFilm)
 router.get('/search/id/:id', filmController.getFilmById)
 router.use('/create', filmController.createFilm)
+router.get('/playfilm/:id', filmController.playFilmCtrl)
 
 
 module.exports = router

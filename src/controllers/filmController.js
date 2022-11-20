@@ -1,7 +1,7 @@
 const Actor  = require("../models/Actor");
 const Film = require("../models/Film");
 const Genre = require("../models/Genre");
-
+var fs = require('fs')
 
 const getAllFilm = async (req,res,next) => {
     let film = new Film()
@@ -177,6 +177,31 @@ try {
         }
     }
 
+    const playFilmCtrl = async(req, res, next) => {
+        const range = req.headers.range
+        const videoId = req.params.id
+        
+        let film = new Film()
+        film.setId = videoId
+        const path = await film.getFilmPath()
+        const pathToDir = 'videoColls/' + path
+        const pathVar = require("path");
+        
+        const hardCodedPath = "E:/BaiWeb9NGitClone/FilmExpressJS/src/videoColls/samplevid.mp4"
+        
+        let absPath = pathVar.join(__dirname, "..", pathToDir)
+         
+        film.setPath = absPath
+        console.log("abs path: ", absPath)
+
+        console.log(film.getPath)
+        film.playFilm(range, res)
+         
+        
+        
+         
+    }
+
     
 
 
@@ -187,5 +212,6 @@ module.exports = {
     getFilmById,
     createFilm,
     updateFilm,
-    deleteFilm
+    deleteFilm,
+    playFilmCtrl
 }
